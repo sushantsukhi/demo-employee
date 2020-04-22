@@ -1,16 +1,13 @@
-package com.example.demoemployee.controller;
+package com.example.demoemployee.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
@@ -18,52 +15,22 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.example.demoemployee.dao.EmployeeDao;
 import com.example.demoemployee.model.Employee;
-import com.example.demoemployee.service.EmployeeService;
 
-//@RunWith(SpringRunner.class)
 @ExtendWith(MockitoExtension.class)
 @RunWith(JUnitPlatform.class)
-public class EmployeeControllerTest {
-
-	private RestTemplate restTemplate = new RestTemplate();
-	private String baseUrl = "http://localhost:8888/v1/";
-
-	// @Test
-	public void testGetEmployeeListSuccess() throws URISyntaxException {
-		URI uri = new URI(baseUrl + "employees");
-
-		ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
-
-		Assert.assertEquals(200, result.getStatusCodeValue());
-	}
-
-	// @Test
-	public void testAddEmployeeMissingHeader() throws URISyntaxException {
-		URI uri = new URI(baseUrl + "employee");
-		Employee employee = new Employee("Sushant", "IT", "abc@gmail.com");
-
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Employee> request = new HttpEntity<>(employee, headers);
-
-		ResponseEntity<String> result = restTemplate.postForEntity(uri, request, String.class);
-
-		Assert.assertEquals(201, result.getStatusCodeValue());
-	}
+public class EmployeeServiceTest {
 
 	@InjectMocks
-	EmployeeController employeeController;
+	EmployeeServiceImpl employeeServiceImpl;
 
 	@Mock
-	EmployeeService employeeService;
+	EmployeeDao employeeDao;
 
 	// @Test
 	public void testAddEmployee() throws Exception {
@@ -73,10 +40,10 @@ public class EmployeeControllerTest {
 		// when(employeeService.addEmployee(any(Employee.class))).thenReturn(true);
 
 		Employee employee = new Employee(1, "Lokesh", "Gupta", "howtodoinjava@gmail.com");
-		ResponseEntity<Object> responseEntity = employeeController.addEmployee(employee);
+		//employeeServiceImpl.addEmployee(employee);
 
-		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
-		assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1");
+		//assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
+		//assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1");
 	}
 
 	@Test
@@ -90,10 +57,10 @@ public class EmployeeControllerTest {
 		map.put(2, employee2);
 		List<Employee> values = new ArrayList<Employee>(map.values());
 
-		when(employeeService.getAllEmployees()).thenReturn(values);
+		when(employeeDao.getAllEmployees()).thenReturn(values);
 
 		// when
-		List<Employee> allEmployees = employeeController.getAllEmployees();
+		List<Employee> allEmployees = employeeServiceImpl.getAllEmployees();
 
 		// then
 		assertThat(allEmployees.size()).isEqualTo(2);
@@ -102,6 +69,6 @@ public class EmployeeControllerTest {
 
 		assertThat(allEmployees.get(0).getName()).isEqualTo(employee1.getName());
 		assertThat(allEmployees.get(1).getName()).isEqualTo(employee2.getName());
-
 	}
+
 }

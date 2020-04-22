@@ -1,6 +1,6 @@
 package com.example.demoemployee.dao;
 
-import java.util.Set;
+import java.util.List;
 
 import com.example.demoemployee.model.Employee;
 
@@ -14,5 +14,5 @@ public interface EmployeeDao {
 
 	Employee getEmployee(int id);
 	
-	Set<Employee> getAllEmployees();
+	List<Employee> getAllEmployees();
 }

@@ -1,6 +1,7 @@
 package com.example.demoemployee.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
@@ -34,6 +35,12 @@ import com.example.demoemployee.service.EmployeeService;
 @RunWith(JUnitPlatform.class)
 public class EmployeeControllerTest {
 
+	@InjectMocks
+	EmployeeController employeeController;
+
+	@Mock
+	EmployeeService employeeService;
+
 	private RestTemplate restTemplate = new RestTemplate();
 	private String baseUrl = "http://localhost:8888/v1/";
 
@@ -59,12 +66,6 @@ public class EmployeeControllerTest {
 		Assert.assertEquals(201, result.getStatusCodeValue());
 	}
 
-	@InjectMocks
-	EmployeeController employeeController;
-
-	@Mock
-	EmployeeService employeeService;
-
 	// @Test
 	public void testAddEmployee() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -72,8 +73,8 @@ public class EmployeeControllerTest {
 
 		// when(employeeService.addEmployee(any(Employee.class))).thenReturn(true);
 
-		Employee employee = new Employee(1, "Lokesh", "Gupta", "howtodoinjava@gmail.com");
-		ResponseEntity<Object> responseEntity = employeeController.addEmployee(employee);
+		Employee employee = new Employee(1, "Sushant", "Dev", "sushant@gmail.com");
+		ResponseEntity<Employee> responseEntity = employeeController.addEmployee(employee);
 
 		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
 		assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1");

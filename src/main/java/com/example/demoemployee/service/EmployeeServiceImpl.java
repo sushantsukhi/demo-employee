@@ -13,34 +13,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private EmployeeDao employeeDao;
-	
+
 	@Override
 	public void addEmployee(Employee emp) {
-		System.out.println("Inside EmployeeServiceImpl: addEmployee..");
 		employeeDao.addEmployee(emp);
 	}
 
 	@Override
 	public void updateEmployee(Employee emp) {
-		System.out.println("Inside EmployeeServiceImpl: updateEmployee..");
 		employeeDao.updateEmployee(emp);
 	}
 
 	@Override
-	public void deleteEmployee(int id) {
-		System.out.println("Inside EmployeeServiceImpl: deleteEmployee..");
-		employeeDao.deleteEmployee(id);
+	public boolean deleteEmployee(int id) {
+		boolean deleted = employeeDao.deleteEmployee(id);
+		return deleted;
 	}
 
 	@Override
 	public Employee getEmployee(int id) {
-		System.out.println("Inside EmployeeServiceImpl: getEmployee..");
 		return employeeDao.getEmployee(id);
 	}
 
 	@Override
+	public List<Employee> getEmployee(String queryParam, String identifier) {
+		return employeeDao.getEmployee(queryParam, identifier);
+	}
+
+	@Override
 	public List<Employee> getAllEmployees() {
-		System.out.println("Inside EmployeeServiceImpl: getAllEmployees..");
 		return employeeDao.getAllEmployees();
 	}
 

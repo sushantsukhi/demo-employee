@@ -10,9 +10,12 @@ public interface EmployeeDao {
 
 	void updateEmployee(Employee emp);
 
-	void deleteEmployee(int id);
+	boolean deleteEmployee(int id);
 
 	Employee getEmployee(int id);
 	
+	List<Employee> getEmployee(String queryParam, String identifier);
+
 	List<Employee> getAllEmployees();
+
 }

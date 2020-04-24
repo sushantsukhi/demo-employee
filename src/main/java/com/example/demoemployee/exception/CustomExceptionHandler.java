@@ -14,7 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class CustomExceptionHandler {
 	@ExceptionHandler(ServletRequestBindingException.class)
-	public final ResponseEntity<Object> handleHeaderException(Exception ex, WebRequest request) {
+	public final ResponseEntity<ErrorResponse> handleHeaderException(Exception ex, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Bad Request", details);
@@ -22,15 +22,23 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+	public final ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Server Error", details);
 		return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
+	@ExceptionHandler(CustomException.class)
+	public ResponseEntity<ErrorResponse> exceptionToDoHandler(Exception ex) {
+		ErrorResponse error = new ErrorResponse();
+		error.setErrorCode(HttpStatus.NOT_FOUND.value());
+		error.setMessage(ex.getMessage());
+		return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
+	}
+
 	@ExceptionHandler(NumberFormatException.class)
-	public final ResponseEntity<Object> handleNFException(Exception ex, WebRequest request) {
+	public final ResponseEntity<ErrorResponse> handleNFException(Exception ex, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Number Format Exception", details);

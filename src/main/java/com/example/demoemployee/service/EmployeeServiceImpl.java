@@ -15,13 +15,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeDao employeeDao;
 
 	@Override
-	public void addEmployee(Employee emp) {
-		employeeDao.addEmployee(emp);
+	public Employee addEmployee(Employee emp) {
+		Employee addedEmp = employeeDao.addEmployee(emp);
+		return addedEmp;
 	}
 
 	@Override
-	public void updateEmployee(Employee emp) {
-		employeeDao.updateEmployee(emp);
+	public Employee updateEmployee(Employee emp) {
+		Employee updatedEmp = employeeDao.updateEmployee(emp);
+		return updatedEmp;
 	}
 
 	@Override

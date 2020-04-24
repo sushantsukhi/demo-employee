@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.example.demoemployee.exception.CustomException;
+import com.example.demoemployee.exception.ErrorResponse;
 import com.example.demoemployee.model.Employee;
 import com.example.demoemployee.service.EmployeeService;
 
@@ -36,29 +38,31 @@ public class EmployeeController {
 		Integer id = employeeService.getAllEmployees().size() + 1;
 		employee.setId(id);
 
-		employeeService.addEmployee(employee);
+		Employee addedEmp = employeeService.addEmployee(employee);
 
-		// Create resource location
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(employee.getId())
-				.toUri();
-
-		// Send location in response
-		return ResponseEntity.created(location).build();
+		if (addedEmp == null) {
+			throw new CustomException("Unable to add Employee..");
+		}
+		return new ResponseEntity<Employee>(addedEmp, HttpStatus.OK);
 	}
 
 	@PutMapping(path = "/employee", consumes = MediaType.APPLICATION_XML_VALUE)
-	public void updateEmployee(@RequestBody Employee emp) {
-		employeeService.updateEmployee(emp);
+	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee emp) throws CustomException {
+		Employee updatedEmp = employeeService.updateEmployee(emp);
+		if (updatedEmp == null) {
+			throw new CustomException("Employee to update doesn´t exist");
+		}
+		return new ResponseEntity<Employee>(updatedEmp, HttpStatus.OK);
 	}
 
 	@DeleteMapping(path = "/employee")
-	public ResponseEntity<Object> deleteEmployee(@RequestParam String id) {
+	public ResponseEntity<ErrorResponse> deleteEmployee(@RequestParam String id) throws CustomException {
 		boolean empDeletedFlag = employeeService.deleteEmployee(Integer.valueOf(id));
-		if (empDeletedFlag) {
-			return ResponseEntity.status(HttpStatus.OK).build();
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		if (!empDeletedFlag) {
+			throw new CustomException("Employee doesn´t exist to delete with ID: " + id);
 		}
+		return new ResponseEntity<ErrorResponse>(new ErrorResponse(HttpStatus.OK.value(), "Employee has been deleted"),
+				HttpStatus.OK);
 		// return "Employee deleted successfully";
 	}
 
@@ -83,21 +87,19 @@ public class EmployeeController {
 
 	// , headers = { "Content-Type=application/xml", "Accept=application/xml" }
 	@GetMapping(path = "/employee/{empId}")
-	public ResponseEntity<Employee> getEmployee(@PathVariable int empId) {
+	public ResponseEntity<Employee> getEmployee(@PathVariable int empId) throws CustomException {
 		// @RequestHeader("accept-language") String lang,
 		Employee employee = employeeService.getEmployee(empId);
-		if (employee != null) {
-			return new ResponseEntity<Employee>(employee, HttpStatus.OK);
+		if (employee == null) {
+			throw new CustomException("Employee does not exist with id: " + empId);
 		}
-		return new ResponseEntity("Employee Not Found with ID:" + empId, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Employee>(employee, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Employee> getAllEmployees() {
-
+	public ResponseEntity<List<Employee>> getAllEmployees() {
 		List<Employee> employees = employeeService.getAllEmployees();
-
-		return employees;
+		return new ResponseEntity<List<Employee>>(employees, HttpStatus.OK);
 	}
 
 	private String findQueryParamsAndIDs(Optional<String> name, Optional<String> dept, Optional<String> email) {

@@ -32,13 +32,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
 	}
 
 	@Override
-	public void addEmployee(Employee emp) {
-		map.put(emp.getId(), emp);
+	public Employee addEmployee(Employee emp) {
+		Employee addedEmp = map.put(emp.getId(), emp);
+		return addedEmp;
 	}
 
 	@Override
-	public void updateEmployee(Employee emp) {
-		map.put(emp.getId(), emp);
+	public Employee updateEmployee(Employee emp) {
+		Employee updatedEmp = map.put(emp.getId(), emp);
+		return updatedEmp;
 	}
 
 	@Override

@@ -6,9 +6,9 @@ import com.example.demoemployee.model.Employee;
 
 public interface EmployeeDao {
 
-	void addEmployee(Employee emp);
+	Employee addEmployee(Employee emp);
 
-	void updateEmployee(Employee emp);
+	Employee updateEmployee(Employee emp);
 
 	boolean deleteEmployee(int id);
 

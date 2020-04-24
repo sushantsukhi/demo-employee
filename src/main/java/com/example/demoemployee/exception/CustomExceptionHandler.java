@@ -31,9 +31,9 @@ public class CustomExceptionHandler {
 
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<ErrorResponse> exceptionToDoHandler(Exception ex) {
-		ErrorResponse error = new ErrorResponse();
-		error.setErrorCode(HttpStatus.NOT_FOUND.value());
-		error.setMessage(ex.getMessage());
+		List<String> details = new ArrayList<>();
+		details.add(ex.getMessage());
+		ErrorResponse error = new ErrorResponse("Server Error", details);
 		return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
 	}
 

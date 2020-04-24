@@ -9,15 +9,7 @@ public class ErrorResponse {
 	// Specific errors in API request processing
 	private List<String> details;
 
-	private int errorCode;
-
 	public ErrorResponse() {
-	}
-
-	public ErrorResponse(int errorCode, String message) {
-		super();
-		this.errorCode = errorCode;
-		this.details = details;
 	}
 
 	public ErrorResponse(String message, List<String> details) {
@@ -40,13 +32,5 @@ public class ErrorResponse {
 
 	public void setDetails(List<String> details) {
 		this.details = details;
-	}
-
-	public int getErrorCode() {
-		return errorCode;
-	}
-
-	public void setErrorCode(int errorCode) {
-		this.errorCode = errorCode;
 	}
 }

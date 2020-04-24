@@ -1,6 +1,5 @@
 package com.example.demoemployee.controller;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demoemployee.exception.CustomException;
 import com.example.demoemployee.exception.ErrorResponse;
@@ -43,16 +41,16 @@ public class EmployeeController {
 		if (addedEmp == null) {
 			throw new CustomException("Unable to add Employee..");
 		}
-		return new ResponseEntity<Employee>(addedEmp, HttpStatus.OK);
+		return new ResponseEntity<Employee>(addedEmp, HttpStatus.CREATED);
 	}
 
-	@PutMapping(path = "/employee", consumes = MediaType.APPLICATION_XML_VALUE)
+	@PutMapping(path = "/employee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee emp) throws CustomException {
 		Employee updatedEmp = employeeService.updateEmployee(emp);
 		if (updatedEmp == null) {
 			throw new CustomException("Employee to update doesn´t exist");
 		}
-		return new ResponseEntity<Employee>(updatedEmp, HttpStatus.OK);
+		return new ResponseEntity<Employee>(updatedEmp, HttpStatus.ACCEPTED);
 	}
 
 	@DeleteMapping(path = "/employee")
@@ -61,8 +59,8 @@ public class EmployeeController {
 		if (!empDeletedFlag) {
 			throw new CustomException("Employee doesn´t exist to delete with ID: " + id);
 		}
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse(HttpStatus.OK.value(), "Employee has been deleted"),
-				HttpStatus.OK);
+		return new ResponseEntity<ErrorResponse>(new ErrorResponse("Employee has been deleted", null),
+				HttpStatus.ACCEPTED);
 		// return "Employee deleted successfully";
 	}
 

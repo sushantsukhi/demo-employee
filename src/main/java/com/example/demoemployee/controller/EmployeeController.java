@@ -30,45 +30,45 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 
 	@PostMapping(path = "/employee", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) throws Exception {
+	public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
 		// @RequestHeader(name = "X-COM-LOCATION", required = false) String
+		int size = employeeService.getAllEmployees().size();
 
-		Integer id = employeeService.getAllEmployees().size() + 1;
-		employee.setId(id);
-
-		Employee addedEmp = employeeService.addEmployee(employee);
-
-		if (addedEmp == null) {
-			throw new CustomException("Unable to add Employee..");
+		Employee existEmp = employeeService.getEmployee(size);
+		if (employee.equals(existEmp)) {
+			return new ResponseEntity<Employee>(existEmp, HttpStatus.NOT_ACCEPTABLE);
 		}
-		return new ResponseEntity<Employee>(addedEmp, HttpStatus.CREATED);
+
+		Integer id = size + 1;
+		employee.setId(id);
+		employeeService.addEmployee(employee);
+		return new ResponseEntity<Employee>(employee, HttpStatus.CREATED);
 	}
 
 	@PutMapping(path = "/employee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee emp) throws CustomException {
+	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee emp) {
 		Employee updatedEmp = employeeService.updateEmployee(emp);
 		if (updatedEmp == null) {
-			throw new CustomException("Employee to update doesn´t exist");
+			return new ResponseEntity<Employee>(updatedEmp, HttpStatus.NOT_MODIFIED);
 		}
-		return new ResponseEntity<Employee>(updatedEmp, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Employee>(emp, HttpStatus.ACCEPTED);
 	}
 
 	@DeleteMapping(path = "/employee")
-	public ResponseEntity<ErrorResponse> deleteEmployee(@RequestParam String id) throws CustomException {
+	public ResponseEntity<ErrorResponse> deleteEmployee(@RequestParam String id) {
 		boolean empDeletedFlag = employeeService.deleteEmployee(Integer.valueOf(id));
 		if (!empDeletedFlag) {
-			throw new CustomException("Employee doesn´t exist to delete with ID: " + id);
+			return new ResponseEntity<ErrorResponse>(new ErrorResponse("Unable to delete employee ", null),
+					HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse("Employee has been deleted", null),
+		return new ResponseEntity<ErrorResponse>(new ErrorResponse("Employee has been deleted successfully ", null),
 				HttpStatus.ACCEPTED);
-		// return "Employee deleted successfully";
 	}
 
 	// , headers = { "Content-Type=application/xml", "Accept=application/xml" }
 	@GetMapping(path = "/employee")
-	public List<Employee> findEmployee(@RequestParam("name") Optional<String> name,
-			@RequestParam("dept") Optional<String> dept, @RequestParam("email") Optional<String> email)
-			throws Exception {
+	public ResponseEntity<List<Employee>> findEmployee(@RequestParam("name") Optional<String> name,
+			@RequestParam("dept") Optional<String> dept, @RequestParam("email") Optional<String> email) {
 		// Map<String, String> allParams,
 		// @RequestParam List<String> id
 		// @RequestHeader("accept-language") String lang,
@@ -78,9 +78,9 @@ public class EmployeeController {
 			String[] queryParamsAndIDArray = queryParamsAndID.split(";");
 			employees = employeeService.getEmployee(queryParamsAndIDArray[0], queryParamsAndIDArray[1]);
 		} else {
-			throw new Exception("unknown query paramter passed..");
+			return new ResponseEntity<List<Employee>>(employees, HttpStatus.NOT_FOUND);
 		}
-		return employees;
+		return new ResponseEntity<List<Employee>>(employees, HttpStatus.OK);
 	}
 
 	// , headers = { "Content-Type=application/xml", "Accept=application/xml" }

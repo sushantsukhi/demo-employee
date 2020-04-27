@@ -91,11 +91,6 @@ public class Employee {
 				return false;
 		} else if (!email.equals(other.email))
 			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

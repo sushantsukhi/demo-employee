@@ -12,6 +12,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>demo-employee</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
 	<name>demo-employee</name>
 	<description>Demo project for Spring Boot Rest web service for Employee
 	</description>

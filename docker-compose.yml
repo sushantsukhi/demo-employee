@@ -1,0 +1,12 @@
+version: '2.1'
+services:
+    demo-employee-docker:
+        container_name: demo-employee-docker
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: config-server:latest
+        expose:
+            - 8888
+        ports:
+            - "8888:8888"
